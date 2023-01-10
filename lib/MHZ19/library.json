@@ -1,0 +1,7 @@
+{
+  "name": "MHZ19",
+  "build": {
+    "srcDir": "./src",
+    "includeDir": "./src"
+  }
+}

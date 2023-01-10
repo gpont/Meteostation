@@ -1,9 +1,21 @@
 #include <Arduino.h>
+#include "EinkDisplay.h"
+#include "SensorCO2.h"
 
-void setup() {
-  // put your setup code here, to run once:
+#define PWD_PIN 4
+
+EinkDisplay display;
+SensorCO2 sensorCO2(PWD_PIN);
+
+void setup()
+{
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+  sensorCO2.loop();
+
+  // display.setNumbers(12, 34);
+
+  display.loop();
 }
