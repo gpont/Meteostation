@@ -5,13 +5,11 @@
 #include <Wire.h>
 #include <stdlib.h>
 // address
-#define adds_com  	0x3C
-#define adds_data	0x3D
+#define adds_com 0x3C
+#define adds_data 0x3D
 
 #define EPD_BUSY_PIN 7
 #define EPD_RST_PIN 8
-
-
 
 extern unsigned char DSPNUM_1in9_on[];
 extern unsigned char DSPNUM_1in9_off[];

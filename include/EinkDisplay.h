@@ -3,7 +3,7 @@
 #include "EPD_1in9.h"
 #include "Sensor.h"
 
-const unsigned char *DIGITS_MAP[] = {
+const unsigned char *const DIGITS_MAP[] = {
     DSPNUM_1in9_W0,
     DSPNUM_1in9_W1,
     DSPNUM_1in9_W2,

@@ -15,4 +15,5 @@ void SensorCO2::loop()
 
 SensorCO2::~SensorCO2()
 {
+  delete mhz19_pwm;
 }
