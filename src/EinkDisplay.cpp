@@ -6,8 +6,11 @@ EinkDisplay::EinkDisplay() : digits{0, 0, 0, 0}
   Wire.begin();
   GPIOInit();
   EPD_1in9_init();
-  // TODO: test and select method
-  EPD_1in9_lut_DU_WB();
+
+  // Clear screen
+  EPD_1in9_lut_5S();
+  EPD_1in9_Write_Screen(DSPNUM_1in9_off);
+  EPD_1in9_lut_GC();
 }
 
 void EinkDisplay::loop()
@@ -47,4 +50,7 @@ void EinkDisplay::setNumbers(int first, int second)
 
 EinkDisplay::~EinkDisplay()
 {
+  EPD_1in9_sleep();
+  Wire.end();
+  Serial.end();
 }

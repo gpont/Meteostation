@@ -10,7 +10,7 @@ SensorCO2::SensorCO2(int pwmpin)
 void SensorCO2::loop()
 {
   co2ppm = mhz19_pwm->getPpmPwm();
-  isNormal = co2ppm <= NORMAL_CO2_LEVEL;
+  isNormal = co2ppm <= (isNormal ? NORMAL_CO2_LEVEL : MIDDLE_CO2_LEVEL);
 }
 
 SensorCO2::~SensorCO2()
