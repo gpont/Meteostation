@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <LowPower.h>
 
-// #include "EinkDisplay.h"
+#include "EinkDisplay.h"
 #include "SensorCO2.h"
 #include "SensorTemHum.h"
 
@@ -9,7 +9,7 @@
 #define TEMP_PIN 4
 #define LED_CO2_PIN 3
 
-// EinkDisplay display;
+EinkDisplay display;
 SensorCO2 sensorCO2(PWD_PIN);
 SensorTemHum sensorTemHum(TEMP_PIN);
 
@@ -35,13 +35,13 @@ void loop()
 
   // TODO check for nan
 
-  // display.setNumbers(
-  //     floor(sensorTemHum.tempC),
-  //     floor(sensorTemHum.humidity));
+  display.setNumbers(
+      floor(sensorTemHum.tempC),
+      floor(sensorTemHum.humidity));
 
   digitalWrite(LED_CO2_PIN, sensorCO2.isNormal ? LOW : HIGH);
 
-  // display.loop();
+  display.loop();
 
   // Sleep on 8 seconds
   LowPower.idle(

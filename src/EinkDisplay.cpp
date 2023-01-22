@@ -1,7 +1,22 @@
 #include <Wire.h>
 #include "EinkDisplay.h"
 
-EinkDisplay::EinkDisplay() : digits{0, 0, 0, 0}
+EinkDisplay::EinkDisplay() : image{
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00,
+                                 0x00, // TODO
+                                 0x05, // С°
+                                 0x00}
 {
   Wire.begin();
   GPIOInit();
@@ -17,35 +32,77 @@ void EinkDisplay::loop()
 {
   if (needUpdate)
   {
-    for (unsigned int i = 0; i < sizeof(digits) / sizeof(digits[0]); i++)
-    {
-      // TODO: test and select methods
-      EPD_1in9_Write_Screen((unsigned char *)DIGITS_MAP[digits[i]]);
-    }
+    EPD_1in9_Write_Screen(image);
 
     needUpdate = false;
   }
 }
 
-void EinkDisplay::setData(int numbers[4])
+void EinkDisplay::setData(unsigned char new_image[IMAGE_SIZE])
 {
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < IMAGE_SIZE; i++)
   {
-    if (numbers[i] != digits[i])
+    if (new_image[i] != image[i])
     {
-      digits[i] = numbers[i];
+      image[i] = new_image[i];
       needUpdate = true;
     }
   }
 }
 
-void EinkDisplay::setNumbers(int first, int second)
+unsigned char getPixel(int number, int order)
 {
-  int data[] = {first / 10,
-                first % 10,
-                second / 10,
-                second % 10};
-  setData(data);
+  return number == -1 ? EMPTY : DIGITS[number][order];
+}
+
+void normalizeDigit(int *digits, int i)
+{
+  if (digits[i] == 0 && (i == 0 || digits[i - 1] == -1))
+  {
+    digits[i] = -1;
+  }
+}
+
+void EinkDisplay::setNumbers(float first, float second)
+{
+  int digitsParsedFirst[] = {
+      (int)(first / 100) % 10,
+      (int)(first / 10) % 10,
+      (int)first % 10,
+      (int)(first * 10) % 10};
+  for (int i = 0; i < 4; i++)
+  {
+    normalizeDigit(digitsParsedFirst, i);
+  }
+
+  int digitsParsedSecond[] = {
+      (int)(second / 10) % 10,
+      (int)second % 10,
+      (int)(second * 10) % 10};
+  for (int i = 0; i < 3; i++)
+  {
+    normalizeDigit(digitsParsedFirst, i);
+  }
+
+  unsigned char new_image[] = {
+      getPixel(digitsParsedFirst[0], 1),
+      getPixel(digitsParsedFirst[1], 0),
+      getPixel(digitsParsedFirst[1], 1),
+      getPixel(digitsParsedFirst[2], 0),
+      getPixel(digitsParsedFirst[2], 1),
+      getPixel(digitsParsedSecond[0], 0),
+      getPixel(digitsParsedSecond[0], 1),
+      getPixel(digitsParsedSecond[1], 0),
+      getPixel(digitsParsedSecond[1], 1),
+      getPixel(digitsParsedSecond[2], 0),
+      getPixel(digitsParsedSecond[2], 1),
+      getPixel(digitsParsedFirst[3], 0),
+      getPixel(digitsParsedFirst[3], 1),
+      image[12],
+      image[13], // С°
+      image[14]};
+
+  setData(new_image);
 }
 
 EinkDisplay::~EinkDisplay()
