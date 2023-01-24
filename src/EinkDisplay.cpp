@@ -1,3 +1,4 @@
+#include <math.h>
 #include <Wire.h>
 #include "EinkDisplay.h"
 
@@ -18,6 +19,7 @@ EinkDisplay::EinkDisplay() : image{
                                  0x05, // С°
                                  0x00}
 {
+  Serial.begin(115200);
   Wire.begin();
   GPIOInit();
   EPD_1in9_init();
@@ -25,6 +27,7 @@ EinkDisplay::EinkDisplay() : image{
   // Clear screen
   EPD_1in9_lut_5S();
   EPD_1in9_Write_Screen(DSPNUM_1in9_off);
+  delay(500);
   EPD_1in9_lut_GC();
 }
 
@@ -32,6 +35,7 @@ void EinkDisplay::loop()
 {
   if (needUpdate)
   {
+    delay(300);
     EPD_1in9_Write_Screen(image);
 
     needUpdate = false;
@@ -55,34 +59,41 @@ unsigned char getPixel(int number, int order)
   return number == -1 ? EMPTY : DIGITS[number][order];
 }
 
-void normalizeDigit(int *digits, int i)
+boolean isNaN(float a)
 {
-  if (digits[i] == 0 && (i == 0 || digits[i - 1] == -1))
+  return a != a;
+}
+
+int *parseNumber(float number, int digitsCount)
+{
+  int *digits = new int[digitsCount];
+  if (!isNaN(number))
   {
-    digits[i] = -1;
+    for (int i = 0; i < digitsCount; i++)
+    {
+      digits[i] = (int)(number / pow(10, (digitsCount - i) - 2)) % 10;
+
+      if (digits[i] == 0 && (i == 0 || digits[i - 1] == -1))
+      {
+        digits[i] = -1;
+      }
+    }
   }
+  else
+  {
+    for (int i = 0; i < digitsCount; i++)
+    {
+      digits[i] = -1;
+    }
+  }
+
+  return digits;
 }
 
 void EinkDisplay::setNumbers(float first, float second)
 {
-  int digitsParsedFirst[] = {
-      (int)(first / 100) % 10,
-      (int)(first / 10) % 10,
-      (int)first % 10,
-      (int)(first * 10) % 10};
-  for (int i = 0; i < 4; i++)
-  {
-    normalizeDigit(digitsParsedFirst, i);
-  }
-
-  int digitsParsedSecond[] = {
-      (int)(second / 10) % 10,
-      (int)second % 10,
-      (int)(second * 10) % 10};
-  for (int i = 0; i < 3; i++)
-  {
-    normalizeDigit(digitsParsedFirst, i);
-  }
+  int *digitsParsedFirst = parseNumber(first, 4);
+  int *digitsParsedSecond = parseNumber(second, 3);
 
   unsigned char new_image[] = {
       getPixel(digitsParsedFirst[0], 1),
@@ -103,6 +114,9 @@ void EinkDisplay::setNumbers(float first, float second)
       image[14]};
 
   setData(new_image);
+
+  delete[] digitsParsedFirst;
+  delete[] digitsParsedSecond;
 }
 
 EinkDisplay::~EinkDisplay()

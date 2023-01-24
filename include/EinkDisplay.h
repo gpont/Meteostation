@@ -19,19 +19,6 @@ const unsigned char DIGITS[][2] = {
     {0xf7, 0xff}, // 9
 };
 
-const unsigned char *const DIGITS_MAP[] = {
-    DSPNUM_1in9_W0,
-    DSPNUM_1in9_W1,
-    DSPNUM_1in9_W2,
-    DSPNUM_1in9_W3,
-    DSPNUM_1in9_W4,
-    DSPNUM_1in9_W5,
-    DSPNUM_1in9_W6,
-    DSPNUM_1in9_W7,
-    DSPNUM_1in9_W8,
-    DSPNUM_1in9_W9,
-};
-
 class EinkDisplay : public Sensor
 {
   bool needUpdate = false;

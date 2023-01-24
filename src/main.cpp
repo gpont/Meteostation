@@ -9,14 +9,15 @@
 #define TEMP_PIN 4
 #define LED_CO2_PIN 3
 
-EinkDisplay display;
+EinkDisplay *display;
 SensorCO2 sensorCO2(PWD_PIN);
 SensorTemHum sensorTemHum(TEMP_PIN);
 
 void setup()
 {
-  Serial.begin(9600);
   pinMode(LED_CO2_PIN, OUTPUT);
+
+  display = new EinkDisplay();
 }
 
 void loop()
@@ -24,24 +25,13 @@ void loop()
   sensorCO2.loop();
   sensorTemHum.loop();
 
-  Serial.print(floor(sensorTemHum.tempC));
-  Serial.print("C, ");
-  Serial.print(floor(sensorTemHum.humidity));
-  Serial.print("%, ");
-  Serial.print(sensorCO2.isNormal ? "normal" : "not normal");
-  Serial.print(", co2: ");
-  Serial.print(sensorCO2.co2ppm);
-  Serial.println(";");
-
-  // TODO check for nan
-
-  display.setNumbers(
+  display->setNumbers(
       floor(sensorTemHum.tempC),
       floor(sensorTemHum.humidity));
 
   digitalWrite(LED_CO2_PIN, sensorCO2.isNormal ? LOW : HIGH);
 
-  display.loop();
+  display->loop();
 
   // Sleep on 8 seconds
   LowPower.idle(
