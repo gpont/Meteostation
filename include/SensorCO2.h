@@ -6,8 +6,8 @@
 class SensorCO2 : public Sensor
 {
   MHZ19 *mhz19_pwm;
-  const int NORMAL_CO2_LEVEL = 600;
-  const int MIDDLE_CO2_LEVEL = 300;
+  const int NORMAL_CO2_LEVEL = 800;
+  const int MIDDLE_CO2_LEVEL = 580;
 
 public:
   int co2ppm;

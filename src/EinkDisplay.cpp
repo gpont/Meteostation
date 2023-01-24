@@ -67,9 +67,13 @@ boolean isNaN(float a)
 int *parseNumber(float number, int digitsCount)
 {
   int *digits = new int[digitsCount];
-  if (!isNaN(number))
+  for (int i = 0; i < digitsCount; i++)
   {
-    for (int i = 0; i < digitsCount; i++)
+    if (isNaN(number))
+    {
+      digits[i] = -1;
+    }
+    else
     {
       digits[i] = (int)(number / pow(10, (digitsCount - i) - 2)) % 10;
 
@@ -77,13 +81,6 @@ int *parseNumber(float number, int digitsCount)
       {
         digits[i] = -1;
       }
-    }
-  }
-  else
-  {
-    for (int i = 0; i < digitsCount; i++)
-    {
-      digits[i] = -1;
     }
   }
 
