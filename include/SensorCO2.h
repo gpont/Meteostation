@@ -1,17 +1,17 @@
 #ifndef SensorCO2_h
 #define SensorCO2_h
 #include "Sensor.h"
-#include "MHZ19.h"
+#include "MHZ19PWM.h"
 
 class SensorCO2 : public Sensor
 {
-  MHZ19 *mhz19_pwm;
-  const int NORMAL_CO2_LEVEL = 800;
-  const int MIDDLE_CO2_LEVEL = 580;
+  MHZ19PWM *mhz19_pwm;
+  const float NORMAL_CO2_LEVEL = 1100.0;
+  const float MIDDLE_CO2_LEVEL = 800.0;
 
 public:
-  int co2ppm;
-  bool isNormal;
+  float co2ppm;
+  bool isNormal = true;
 
   SensorCO2(int pwmpin);
   ~SensorCO2();

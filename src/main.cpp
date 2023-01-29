@@ -9,38 +9,43 @@
 #define TEMP_PIN 4
 #define LED_CO2_PIN 3
 
-EinkDisplay *display;
-SensorCO2 sensorCO2(PWD_PIN);
+// EinkDisplay *display;
+SensorCO2 *sensorCO2;
 SensorTemHum sensorTemHum(TEMP_PIN);
 
 void setup()
 {
+  Serial.begin(9600);
   pinMode(LED_CO2_PIN, OUTPUT);
 
-  display = new EinkDisplay(0x05);
+  sensorCO2 = new SensorCO2(PWD_PIN);
+  // display = new EinkDisplay(0x05);
 }
 
 void loop()
 {
-  sensorCO2.loop();
+  Serial.print("CO2: ");
+  sensorCO2->loop();
   sensorTemHum.loop();
 
-  display->setNumbers(
-      floor(sensorTemHum.tempC),
-      floor(sensorTemHum.humidity));
+  Serial.println(sensorCO2->co2ppm);
+  delay(500);
+  // display->setNumbers(
+  //     floor(sensorTemHum.tempC),
+  //     floor(sensorTemHum.humidity));
 
-  digitalWrite(LED_CO2_PIN, sensorCO2.isNormal ? LOW : HIGH);
+  digitalWrite(LED_CO2_PIN, sensorCO2->isNormal ? LOW : HIGH);
 
-  display->loop();
+  // display->loop();
 
   // Sleep on 8 seconds
-  LowPower.idle(
-      SLEEP_8S,
-      ADC_OFF,
-      TIMER2_OFF,
-      TIMER1_OFF,
-      TIMER0_OFF,
-      SPI_OFF,
-      USART0_OFF,
-      TWI_OFF);
+  // LowPower.idle(
+  //     SLEEP_8S,
+  //     ADC_OFF,
+  //     TIMER2_OFF,
+  //     TIMER1_OFF,
+  //     TIMER0_OFF,
+  //     SPI_OFF,
+  //     USART0_OFF,
+  //     TWI_OFF);
 }
