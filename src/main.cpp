@@ -17,7 +17,7 @@ void setup()
 {
   pinMode(LED_CO2_PIN, OUTPUT);
 
-  display = new EinkDisplay();
+  display = new EinkDisplay(0x05);
 }
 
 void loop()
