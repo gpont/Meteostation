@@ -1,15 +1,19 @@
 #include <Arduino.h>
 #include <LowPower.h>
+#include <EinkDisplay.h>
 
-#include "EinkDisplay.h"
+#include "SensorBattery.h"
 #include "SensorCO2.h"
 #include "SensorTemHum.h"
 
 #define PWD_PIN 2
 #define TEMP_PIN 4
 #define LED_CO2_PIN 3
+#define BATTERY_PIN 5 // TODO check pin
 
 EinkDisplay *display;
+
+SensorBattery sensorBattery(BATTERY_PIN);
 SensorCO2 *sensorCO2;
 SensorTemHum sensorTemHum(TEMP_PIN);
 
@@ -25,10 +29,12 @@ void loop()
 {
   sensorCO2->loop();
   sensorTemHum.loop();
+  sensorBattery.loop();
 
   display->setNumbers(
       floor(sensorTemHum.tempC),
       floor(sensorTemHum.humidity));
+  display->setLowPowerIndicator(!sensorBattery.isNormal);
 
   digitalWrite(LED_CO2_PIN, sensorCO2->isNormal ? LOW : HIGH);
 
