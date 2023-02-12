@@ -9,7 +9,7 @@
 #define PWD_PIN 2
 #define TEMP_PIN 4
 #define LED_CO2_PIN 3
-#define BATTERY_PIN 5 // TODO check pin
+#define BATTERY_PIN A1 // TODO check pin
 
 EinkDisplay *display;
 

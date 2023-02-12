@@ -3,6 +3,7 @@
 
 SensorBattery::SensorBattery(int battery_pin)
 {
+  pinMode(battery_pin, INPUT);
   battery_pin = battery_pin;
 }
 
